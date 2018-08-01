@@ -11,25 +11,25 @@ const apiConnect = 'https://connect.afpforum.com:443/v0.9';
 //------------------------------------------------------------------------------
 router.post('/login', (req, res) => {
     console.log('POST : /api/user/login');
-    getApiUserLogin('apulcino', 'afwinw!se444').then(respData => {
+    getApiUserLogin('apulcino', 'afwinw!se444').then(resp => {
         var allPromise = Promise.all([ 
-            getApiUser(respData.AuthToken), 
-            getApiUserProducts(respData.AuthToken, 'Text'),
-            getApiUserProducts(respData.AuthToken, 'Picture')
+            getApiUser(resp.Data.AuthToken), 
+            getApiUserProducts(resp.Data.AuthToken, 'Text'),
+            getApiUserProducts(resp.Data.AuthToken, 'Picture')
          ])
         allPromise.then((respArray => {
-            respData.Culture = respArray[0].Culture;
-            respData.Email = respArray[0].Email;
-            respData.IsPasswordEditable = respArray[0].IsPasswordEditable;
-            respData.IsAuthTokenExpired = respArray[0].IsAuthTokenExpired;
-            respData.TokenIssueDateUtc = respArray[0].TokenIssueDateUtc;
-            respData.TokenExpirationDateUtc = respArray[0].TokenExpirationDateUtc;
+            resp.Data.Culture = respArray[0].Culture;
+            resp.Data.Email = respArray[0].Email;
+            resp.Data.IsPasswordEditable = respArray[0].IsPasswordEditable;
+            resp.Data.IsAuthTokenExpired = respArray[0].IsAuthTokenExpired;
+            resp.Data.TokenIssueDateUtc = respArray[0].TokenIssueDateUtc;
+            resp.Data.TokenExpirationDateUtc = respArray[0].TokenExpirationDateUtc;
 
-            respData.hasAccessToTexts = (respArray[1].length !== 0);
-            respData.hasAccessToPictures = (respArray[2].length !== 0);
-            respData.password = '...';
+            resp.Data.hasAccessToTexts = (respArray[1].length !== 0);
+            resp.Data.hasAccessToPictures = (respArray[2].length !== 0);
+            resp.Data.password = '...';
 
-            res.end(JSON.stringify(respData));
+            res.end(JSON.stringify(resp));
         })).catch(err => {
             console.log('Error 0 : ', err);                        
         });
@@ -132,7 +132,7 @@ function getApiUserLogin(login, password) {
             return response.json();
         }).then(function(json){
             console.log('getApiUserLogin : ', json);
-            resolve(json.Data);
+            resolve(json);
         }).catch(err => {
             console.log('Error 2 :', err);
             reject(err);
