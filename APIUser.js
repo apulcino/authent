@@ -7,7 +7,7 @@ const router = express.Router();
 const apiConnect = 'https://connect.afpforum.com:443/v0.9';
 
 //------------------------------------------------------------------------------
-// https://connect.afpforum.com:443/v0.9/api/user/login
+// http://localhost:3000/api/user/login
 //------------------------------------------------------------------------------
 router.post('/login', (req, res) => {
     console.log('POST : /api/user/login');
@@ -112,7 +112,8 @@ function getApiUser(token) {
         });
     });
 }
-
+//------------------------------------------------------------------------------
+// https://connect.afpforum.com:443/v0.9/api/user/login
 //------------------------------------------------------------------------------
 // "Data": {
 //     "Login": "apulcino",
@@ -126,7 +127,10 @@ function getApiUserLogin(login, password) {
     return new Promise(function (resolve, reject) {
         fetch(apiConnect + '/api/user/login', {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: {
+                'Content-Type': 'application/json',
+                'X-AFP-IGNORE-IP': 'true'
+            },
             body: JSON.stringify({Login: login, Password: password})
         }).then(response => {
             return response.json();
