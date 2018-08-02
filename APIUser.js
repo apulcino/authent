@@ -12,11 +12,11 @@ const apiConnect = 'https://connect.afpforum.com:443/v0.9';
 router.post('/login', (req, res) => {
     console.log('POST : /api/user/login');
     getApiUserLogin('apulcino', 'afwinw!se444').then(resp => {
-        var allPromise = Promise.all([ 
-            getApiUser(resp.Data.AuthToken), 
+        var allPromise = Promise.all([
+            getApiUser(resp.Data.AuthToken),
             getApiUserProducts(resp.Data.AuthToken, 'Text'),
             getApiUserProducts(resp.Data.AuthToken, 'Picture')
-         ])
+        ])
         allPromise.then((respArray => {
             resp.Data.Culture = respArray[0].Culture;
             resp.Data.Email = respArray[0].Email;
@@ -31,29 +31,44 @@ router.post('/login', (req, res) => {
 
             res.end(JSON.stringify(resp));
         })).catch(err => {
-            console.log('Error 0 : ', err);                        
+            console.log('Error 0 : ', err);
         });
     }).catch(err => {
-        console.log('Error 1 : ', err);            
+        console.log('Error 1 : ', err);
     });
 })
 
 //------------------------------------------------------------------------------
+// http://localhost:3000/api/user
 //------------------------------------------------------------------------------
 router.get('/', (req, res) => {
     getApiUser(req.query.auth).then(respData => {
-        res.send(respData);        
+        res.send(respData);
     }).catch(err => {
         console.log('Error 2 :', err);
     });
 })
-
 //------------------------------------------------------------------------------
-// 
+// http://localhost:3000/api/user/checktoken/DDD1...BBAE
+//------------------------------------------------------------------------------
+router.get('/checktoken/:authtoken', (req, res) => {
+    getApiUser(req.params.authtoken).then(respData => {
+        if (null != respData) {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+        } else {
+            res.writeHead(403, { 'Content-Type': 'application/json' });
+        }
+        res.end();
+    }).catch(err => {
+        console.log('Error : ', err);
+    });
+})
+//------------------------------------------------------------------------------
+//
 //------------------------------------------------------------------------------
 router.get('/products/:itemNature', function (req, res) {
     getApiUserProducts(req.query.auth, req.params.itemNature).then(respData => {
-        res.send(respData);        
+        res.send(respData);
     }).catch(err => {
         console.log('Error 2 :', err);
     });
@@ -67,16 +82,16 @@ function getApiUserProducts(token, itemNature) {
     url = url.replace('{itemNature}', itemNature);
     console.log('GET : /api/user/products : ', url);
     return new Promise(function (resolve, reject) {
-        fetch( url , {
+        fetch(url, {
             method: 'GET',
-            headers: {'Content-Type': 'application/json'},
+            headers: { 'Content-Type': 'application/json' },
         }).then(response => {
             return response.json();
-        }).then(function(json){
-            console.log('getApiUserProducts : ', json);            
+        }).then(function (json) {
+            console.log('getApiUserProducts : ', json);
             resolve(json.Data[0].Products);
         }).catch(err => {
-            console.log('getApiUserProducts : Error : ', err);                        
+            console.log('getApiUserProducts : Error : ', err);
             resolve([]);
         });
     });
@@ -98,16 +113,16 @@ function getApiUser(token) {
     let url = apiConnect + '/api/user?auth=' + token;
     console.log('GET : /api/user : ', url);
     return new Promise(function (resolve, reject) {
-        fetch( url , {
+        fetch(url, {
             method: 'GET',
-            headers: {'Content-Type': 'application/json'},
+            headers: { 'Content-Type': 'application/json' },
         }).then(response => {
             return response.json();
-        }).then(function(json){
+        }).then(function (json) {
             console.log('getApiUser : ', json);
             resolve(json.Data);
         }).catch(err => {
-            console.log('getApiUser : Error : ', err);                        
+            console.log('getApiUser : Error : ', err);
             resolve({});
         });
     });
@@ -131,17 +146,17 @@ function getApiUserLogin(login, password) {
                 'Content-Type': 'application/json',
                 'X-AFP-IGNORE-IP': 'true'
             },
-            body: JSON.stringify({Login: login, Password: password})
+            body: JSON.stringify({ Login: login, Password: password })
         }).then(response => {
             return response.json();
-        }).then(function(json){
+        }).then(function (json) {
             console.log('getApiUserLogin : ', json);
             resolve(json);
         }).catch(err => {
             console.log('Error 2 :', err);
             reject(err);
-        });    
-    });        
+        });
+    });
 }
 
 module.exports = router;
