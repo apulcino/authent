@@ -1,3 +1,4 @@
+"use strict"
 const constantes = require('../library/constantes');
 const express = require('express');
 const application = express();

@@ -1,3 +1,4 @@
+"use strict"
 const http = require('http');
 const application = require('./application');
 const constantes = require('../library/constantes');
