@@ -15,7 +15,7 @@ server.listen(port, function () {
   var intervalObj = setInterval(() => {
     let AFORegisteryUrl = regMgr.getList();
     if (0 !== AFORegisteryUrl.length) {
-      constantes.declareService(AFORegisteryUrl, constantes.MSTypeEnum.afoAuthent, host, port, constantes.MSPathnameEnum.afoAuthent);
+      constantes.declareService('AuthentSrv', AFORegisteryUrl, constantes.MSTypeEnum.afoAuthent, host, port, constantes.MSPathnameEnum.afoAuthent);
     }
   }, 10000);
   console.log("AuthentSrv listening at http://%s:%s", host, port)
@@ -23,7 +23,7 @@ server.listen(port, function () {
 
 const regMgr = new regsitryMgr();
 const mcRecver = new multicastRecver(constantes.getServerIpAddress(), constantes.MCastAppPort, constantes.MCastAppAddr, (address, port, message) => {
-  console.log('AuthentSrv : MCast Msg: From: ' + address + ':' + port + ' - ' + JSON.stringify(message));
+  console.log('AuthentSrv : Recv Msg From : ' + address + ':' + port + ' - ' + JSON.stringify(message));
   if (message.type === constantes.MSMessageTypeEnum.regAnnonce) {
     regMgr.add(message.host, message.port);
   }
