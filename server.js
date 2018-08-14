@@ -14,12 +14,13 @@ const server = http.createServer(application);
 server.listen(port, function () {
   var host = constantes.getServerIpAddress();
   var port = server.address().port
-  var intervalObj = setInterval(() => {
-    let AFORegisteryUrl = regMgr.getList();
-    if (0 !== AFORegisteryUrl.length) {
-      constantes.declareService(traceMgr, AFORegisteryUrl, constantes.MSTypeEnum.afoAuthent, host, port, constantes.MSPathnameEnum.afoAuthent);
-    }
-  }, 10000);
+  // var intervalObj = setInterval(() => {
+  //   let AFORegisteryUrl = regMgr.getList();
+  //   if (0 !== AFORegisteryUrl.length) {
+  //     constantes.declareService(traceMgr, AFORegisteryUrl, constantes.MSTypeEnum.afoAuthent, host, port, constantes.MSPathnameEnum.afoAuthent);
+  //   }
+  // }, 10000);
+  constantes.declareService(traceMgr, AFORegisteryUrl, constantes.MSTypeEnum.afoAuthent, host, port, constantes.MSPathnameEnum.afoAuthent);
   traceMgr.info("listening at http://%s:%s", host, port)
 });
 
