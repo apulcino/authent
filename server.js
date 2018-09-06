@@ -1,4 +1,5 @@
 "use strict"
+const config = require('config');
 const http = require('http');
 const application = require('./application');
 const constantes = require('../library/constantes');
@@ -6,7 +7,10 @@ const multicastRecver = require('../library/multicastRecver');
 const regsitryMgr = require('../library/registryMgr');
 const traceMgr = new (require('../library/tracemgr'))('AFOAuthent');
 
-const port = process.env.PORT || 0;
+let port = 0;
+if (config.has('Components.AFOAuthent.port')) {
+  port = config.get('Components.AFOAuthent.port');
+}
 
 let AFORegisteryUrl = [];
 
@@ -22,6 +26,7 @@ server.listen(port, function () {
   // }, 10000);
   constantes.declareService(traceMgr, AFORegisteryUrl, constantes.MSTypeEnum.afoAuthent, host, port, constantes.MSPathnameEnum.afoAuthent);
   traceMgr.info("listening at http://%s:%s", host, port)
+  application.initialize(host, port);
 });
 
 const regMgr = new regsitryMgr();
