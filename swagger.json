@@ -27,8 +27,38 @@
     "application/json"
   ],
   "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get user detail",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "auth",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "user authentication token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/SimpleUserDesc"
+            }
+          }
+        }
+      }
+    },
     "/login": {
       "post": {
+        "tags": [
+          "User"
+        ],
         "summary": "Authentify the user",
         "parameters": [
           {
@@ -68,7 +98,6 @@
     "UserDesc": {
       "properties": {
         "Data": {
-          "type": "object",
           "properties": {
             "Login": {
               "type": "string"
@@ -89,10 +118,10 @@
               "type": "string"
             },
             "IsPasswordEditable": {
-              "type": "string"
+              "type": "boolean"
             },
             "IsAuthTokenExpired": {
-              "type": "string"
+              "type": "boolean"
             },
             "TokenIssueDateUtc": {
               "type": "string"
@@ -101,10 +130,10 @@
               "type": "string"
             },
             "hasAccessToTexts": {
-              "type": "string"
+              "type": "boolean"
             },
             "hasAccessToPictures": {
-              "type": "string"
+              "type": "boolean"
             },
             "password": {
               "type": "string"
@@ -112,12 +141,37 @@
           }
         },
         "IsSuccess": {
-          "type": "string"
+          "type": "boolean"
         },
         "Message": {
           "type": "string"
         },
         "Error": {
+          "type": "string"
+        }
+      }
+    },
+    "SimpleUserDesc": {
+      "properties": {
+        "Login": {
+          "type": "string"
+        },
+        "Culture": {
+          "type": "string"
+        },
+        "Email": {
+          "type": "string"
+        },
+        "IsPasswordEditable": {
+          "type": "boolean"
+        },
+        "IsAuthTokenExpired": {
+          "type": "boolean"
+        },
+        "TokenIssueDateUtc": {
+          "type": "string"
+        },
+        "TokenExpirationDateUtc": {
           "type": "string"
         }
       }

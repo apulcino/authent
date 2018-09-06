@@ -1,4 +1,5 @@
 "use strict"
+const config = require('config');
 const fetch = require('node-fetch');
 const express = require('express');
 const router = express.Router();
@@ -7,10 +8,12 @@ const bodyParser = require("body-parser");
 const jsonParser = bodyParser.json();
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
-const apiConnect = 'https://connect.afpforum.com:443/v0.9';
-
+let apiConnect = 'https://connect.afpforum.com:443/v0.9';
+if (config.has('Components.APIConnect')) {
+    apiConnect = config.get('Components.APIConnect');
+}
 //------------------------------------------------------------------------------
-// http://localhost:3000/api/user/login
+// POST : http://localhost:3000/api/user/login
 //------------------------------------------------------------------------------
 router.post('/login', jsonParser, (req, res) => {
     console.log('POST : /api/user/login');
@@ -64,7 +67,7 @@ function checkIdentityValue(body) {
     return true;
 }
 //------------------------------------------------------------------------------
-// http://localhost:3000/api/user
+// GET : http://localhost:3000/api/v1/user
 //------------------------------------------------------------------------------
 router.get('/', (req, res) => {
     getApiUser(req.query.auth).then(respData => {
@@ -74,7 +77,7 @@ router.get('/', (req, res) => {
     });
 })
 //------------------------------------------------------------------------------
-// http://localhost:3000/api/user/checktoken/DDD1...BBAE
+// GET : http://localhost:3000/api/v1/user/checktoken/DDD1...BBAE
 //------------------------------------------------------------------------------
 router.get('/checktoken/:authtoken', (req, res) => {
     getApiUser(req.params.authtoken).then(respData => {
@@ -89,7 +92,7 @@ router.get('/checktoken/:authtoken', (req, res) => {
     });
 })
 //------------------------------------------------------------------------------
-//
+// GET : http://localhost:3000/api/v1/user/products/text?auth=DDD1...BBAE
 //------------------------------------------------------------------------------
 router.get('/products/:itemNature', function (req, res) {
     getApiUserProducts(req.query.auth, req.params.itemNature).then(respData => {
