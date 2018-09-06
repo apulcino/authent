@@ -3,6 +3,8 @@ const fetch = require('node-fetch');
 const express = require('express');
 const router = express.Router();
 
+const bodyParser = require("body-parser");
+const jsonParser = bodyParser.json();
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 const apiConnect = 'https://connect.afpforum.com:443/v0.9';
@@ -10,9 +12,18 @@ const apiConnect = 'https://connect.afpforum.com:443/v0.9';
 //------------------------------------------------------------------------------
 // http://localhost:3000/api/user/login
 //------------------------------------------------------------------------------
-router.post('/login', (req, res) => {
+router.post('/login', jsonParser, (req, res) => {
     console.log('POST : /api/user/login');
-    getApiUserLogin('apulcino', 'afwinw!se444').then(resp => {
+    if (false === checkIdentityValue(req.body)) {
+        res.set('XAFP-SOURCE', '');
+        res.status(400).json({
+            isSuccess: false,
+            message: 'credential not valid'
+        });
+        return;
+    }
+
+    getApiUserLogin(req.body.Login, req.body.Password).then(resp => {
         var allPromise = Promise.all([
             getApiUser(resp.Data.AuthToken),
             getApiUserProducts(resp.Data.AuthToken, 'Text'),
@@ -39,6 +50,19 @@ router.post('/login', (req, res) => {
     });
 })
 
+/**
+ * ------------------------------------------------------------------------------
+ *
+ * ------------------------------------------------------------------------------
+ */
+function checkIdentityValue(body) {
+    body.Login = body.Login || '';
+    body.Password = body.Password || '';
+    if (0 === body.Login.length * body.Password.length) {
+        return false;
+    }
+    return true;
+}
 //------------------------------------------------------------------------------
 // http://localhost:3000/api/user
 //------------------------------------------------------------------------------
