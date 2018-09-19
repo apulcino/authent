@@ -1,5 +1,6 @@
 "use strict"
 const constantes = require('../library/constantes');
+const consulMgr = require('../library/consulMgr').consulMgr;
 const express = require('express');
 const application = express();
 
@@ -16,6 +17,14 @@ application.initialize = function (host, port) {
     var swaggerDocument = require('./swagger.json');
     swaggerDocument.host = host + ':' + port;
     application.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+    var ID = "authent-v1-" + (new Date()).getTime();
+    consulMgr.Register({
+        "ID": ID,
+        "Tags": ["authentication", "v1"],
+        "Address": host,
+        "Port": port
+    });
 }
 
 module.exports = application;
