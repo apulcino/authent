@@ -18,9 +18,8 @@ application.initialize = function (host, port) {
     swaggerDocument.host = host + ':' + port;
     application.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-    var ID = "authent-v1-" + (new Date()).getTime();
     consulMgr.Register({
-        "ID": ID,
+        "Name": "authent-v1",
         "Tags": ["authentication", "v1"],
         "Address": host,
         "Port": port
